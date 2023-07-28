@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="timeline">
+    {% if user %}
+    <div>
+    <!-- 👇 게시글 수정해서 제출 (/post/update) -->
+    <form id="twit-form" action="/post/update" method="post" enctype="multipart/form-data">
+        <div class="input-group"> <!-- 👈 1. 기존 "글" 미리 입력 -->
+            <textarea id="twit" name="content" maxlength="140">{{ post.content }}</textarea>
+        </div>
+        <div class="img-preview">
+            {% if post.img %} <!-- 👈 2. 기존 "이미지 URL" 미리 입력 -->
+            <img id="img-preview" src={{ post.img }} style="display: inline;" width="250" alt="미리보기">
+            <input id="img-url" type="hidden" name="url" value={{ post.img }}>
+            {% else %}
+            <img id="img-preview" src="" style="display: none;" width="250" alt="미리보기">
+            <input id="img-url" type="hidden" name="url">
+            {% endif %}
+            <input id="post-id" type="hidden" name="postId" value={{ post.id }}>           
+        </div>
+        <div>
+            <label id="img-label" for="img">사진 업로드</label> <!-- [사진업로드] 버튼 -->
+            <input id="img" type="file" accept="image/*">
+            <button id="twit-btn" type="submit" class="btn">수정완료</button>
+        </div>
+    </form>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block script %}  
+<script>
+    // [사진업로드] 버튼 - 파일 선택하자마자, '/post/img'로 바로 전송 됨
+    if (document.getElementById('img')) {
+      document.getElementById('img').addEventListener('change', function(e) {
+        const formData = new FormData();
+        console.log(this, this.files);
+        formData.append('img', this.files[0]);
+        axios.post('/post/img', formData)
+          .then((res) => {
+            document.getElementById('img-url').value = res.data.url; // (controllers/post.js) res.json({url: ~~~})으로 넘김
+            document.getElementById('img-preview').src = res.data.url; // 이미지 미리보기 
+            document.getElementById('img-preview').style.display = 'inline';
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      });
+    }
+</script>
+{% endblock %}

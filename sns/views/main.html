@@ -1,0 +1,308 @@
+{% extends 'layout.html' %}
+<!-- 
+    1. 로그인 O => 게시글 작성(Form) + [사진업로드] 버튼
+    2. 해시태그 검색
+    3. twits 랜더링 + [팔로우] 버튼
+ -->
+{% block content %}
+    <div class="timeline">
+      <!-- 👇 1. 로그인 O => 게시글 작성(Form) -->
+      {% if user %}
+        <div>
+          <form id="twit-form" action="/post" method="post" enctype="multipart/form-data">
+            <div class="input-group">
+              <textarea id="twit" name="content" maxlength="140"></textarea>
+            </div>
+            <div class="img-preview">
+              <img id="img-preview" src="" style="display: none;" width="250" alt="미리보기">
+              <input id="img-url" type="hidden" name="url"> <!--  이미지 파일의 URL(썸네일)을 서버로 전달 -->
+            </div>
+            <div>
+              <label id="img-label" for="img">사진 업로드</label> <!-- 👈 [사진업로드] 버튼 -->
+              <input id="img" type="file" accept="image/*">
+              <button id="twit-btn" type="submit" class="btn">제출</button>
+            </div>
+          </form>
+        </div>
+      {% endif %}
+      <div class="twits">
+        <!-- 👇 2. 해시태그 검색 -->
+        <form id="hashtag-form" action="/hashtag">    <!-- <form>에서 method의 기본값이 GET이므로, 쿼리스트링으로 전달 됨 (서버에서 req.query.hashtag로 받음) -->
+          <input type="text" name="hashtag" placeholder="태그 검색">
+          <button class="btn">검색</button>
+        </form>
+        <!-- 👇 3. twits 랜더링 -->
+        {% for twit in twits %}
+          <div class="twit">
+            <!-- 사용자 몰래 서버로 보낼 데이터 (버튼 클릭 시, javascript로 데이터 보냄) -->
+            <input type="hidden" value="{{twit.User.id}}" class="twit-user-id">
+            <input type="hidden" value="{{twit.id}}" class="twit-id">
+            <!-- 작성자 -->
+            {% if disableLink %} <!-- 작성자의 게시물들 조회 시, 작성자 링크 제거 -->
+              <span style="font-weight: bold;">{{ twit.User.nick }}</span>
+            {% else %}
+              <a class="twit-author" style="font-weight: bold; color: rgb(17, 79, 214);" href="post/{{twit.User.id}}">{{ twit.User.nick }}</a>  <!-- 👈 작성자 -->
+            {% endif %}
+            {% if not followingIdList.includes(twit.User.id) and twit.User.id !== user.id and user.id %}
+              <button class="twit-follow">팔로우</button>  <!-- 👈 [팔로우] 버튼 -->
+            {% endif %}
+            {% if followingIdList.includes(twit.User.id) and twit.User.id !== user.id %}
+              <button class="twit-unfollow">언팔로우</button>  <!-- 👈 [언팔로우] 버튼 -->
+            {% endif %}
+            {% if twit.User.id === user.id %}
+              <button class="twit-update">글 수정</button>  <!-- 👈 [글 수정] 버튼 -->
+              <button class="twit-delete">글 삭제</button>  <!-- 👈 [글 삭제] 버튼 -->
+            {% endif %}
+            <!-- #해시태그 링크 -->
+            {% for hashtag in twit.Hashtags %}
+              <a href="/hashtag?hashtag={{ hashtag.title }}" style="color: royalblue; text-decoration: none; margin-left: 10px;">#{{ hashtag.title }}</a> 
+            {% endfor %}
+            <!-- 좋아요 {{ LikePostsIdList }} -->
+            {% if LikePostsIdList.includes(twit.id) %} <!-- (routes/page)에서 res.locals.LikePostsIdList 으로 전달 -->
+              <a href="/post/dislike/{{ twit.id }}" style="float: right; text-decoration: none;">❤️ <span style="color: crimson;">{{ twit.likes }}</span></a> 
+            {% else %}
+              <a href="/post/like/{{ twit.id }}" style="float: right; text-decoration: none;">🤍 <span style="color: crimson;">{{ twit.likes }}</span></a> 
+            {% endif %}
+            <!-- 본문 -->
+            <div class="twit-content" style="margin-top: 10px;">{{twit.content}}</div>
+            <!-- 👇 게시글 이미지 (썸네일) -->  
+            {% if twit.img %}
+              <div class="twit-img">
+                <img src="{{twit.img}}" onerror="this.src = this.src.replace(/\/thumb\//, '/original/');" alt="섬네일"> <!-- 실패하면, 원본 로딩 -->
+              </div>
+            {% endif %}
+
+
+            <!-- 댓글 입력창 -->
+            {% if user %}
+            <div class="comment-input" style="font-size: 0.9em; background-color: #f1f1f1; padding: 9px; border-radius: 10px; margin-top: 20px; display: flex; align-items: center;">
+              <input class="userId" type="hidden" name="userId" value="{{user.id}}"> <!-- 로그인한 유저 -->
+              <input class="postUserId" type="hidden" name="postUserId" value="{{ twit.User.id }}"> <!-- 게시글 작성자 -->
+              <input class="postId" type="hidden" name="postId" value="{{ twit.id }}"> <!-- 어떤 게시글(postId)의 댓글인지 표시하기 위함 -->
+              <input class="commentId" type="hidden" name="commentId" value=""> <!-- 어떤 댓글(commentId)의 대댓글인지 표시하기 위함 -->
+              <span style="margin-right: 10px; font-weight: bold;">{{ user.nick }}:</span>
+              <input class="comment-text" placeholder="댓글을 입력하세요..." style="flex: 1;"></input>
+              <button class="comment-submit" style="margin-left: 10px; border: 1px solid silver; border-radius: 4px; padding: 5px;">등록</button>
+            </div>
+            {% endif %}
+
+            <!-- 댓글 목록 -->
+            {% if twit.Comments.length > 0 %} 
+              <div class="comment-section" style="font-size: 0.9em; border: 1px solid silver; border-radius: 4px; padding: 10px; position: relative; margin-top: 10px; margin-bottom: 10px;">
+                {% for comment in twit.Comments %}
+                  <!-- 댓글 -->
+                  <div class="comment">
+                      <a href="/post/{{ comment.User.id }}" style="font-weight: bold; color: black;">{{ comment.User.nick }}</a>: {{ comment.content }}
+                      {% if user %}
+                        <button class="addReply reply-btn" style="margin-left: 15px;" value="{{ comment.id }}">답글</button>
+                        <!-- 답글 입력창 -->
+                        <div class="reply-input" style="display: none;">
+                          <div class="reply-input" style="font-size: 0.9em; background-color: #f1f1f1; padding: 9px; border-radius: 10px; margin-left: 10px; margin-top: 10px; margin-bottom: 10px; display: flex; align-items: center;">
+                            <input class="userId" type="hidden" name="userId" value="{{user.id}}"> <!-- 로그인한 유저 -->
+                            <input class="postUserId" type="hidden" name="postUserId" value="{{ twit.User.id }}"> <!-- 게시글 작성자 -->
+                            <input class="postId" type="hidden" name="postId" value="{{ twit.id }}"> <!-- 어떤 게시글(postId)의 댓글인지 표시하기 위함 -->
+                            <input class="commentId" type="hidden" name="commentId" value="{{ comment.id }}"> <!-- 어떤 댓글(commentId)의 대댓글인지 표시하기 위함 -->
+                            <span style="margin-right: 10px; font-weight: bold;">{{ user.nick }}:</span>
+                            <input class="reply-text" placeholder="답글을 입력하세요..." style="flex: 1;"></input>
+                            <button class="reply-submit" style="margin-left: 10px; border: 1px solid silver; border-radius: 4px; padding: 5px;">등록</button>
+                          </div>
+                        </div>
+                      {% endif %}
+                      <!-- 답글 목록 -->
+                      {% for reply in comment.Replies %}
+                        <div>
+                          ┗ <a href="/post/{{ comment.User.id }}" style="font-weight: bold; color: black;">{{ reply.User.nick }}</a>: {{ reply.content }}
+                        </div>
+                      {% endfor %}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+  <script>  
+    // 👇 [사진업로드] 버튼 - 파일 선택하자마자, '/post/img'로 바로 전송 됨
+    if (document.getElementById('img')) {
+      document.getElementById('img').addEventListener('change', function(e) {
+        const formData = new FormData();
+        console.log(this, this.files);
+        formData.append('img', this.files[0]);
+        axios.post('/post/img', formData)
+          .then((res) => {
+            document.getElementById('img-url').value = res.data.url; // 선택한 이미지 파일의 URL(썸네일)을 서버로 전달해서 Post 생성
+            // 👇 미리 보기 (원본)
+            document.getElementById('img-preview').src = res.data.originalUrl; // 이미지 미리보기 
+            document.getElementById('img-preview').style.display = 'inline';
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      });
+    }
+    // 👇 [팔로우] 버튼
+    document.querySelectorAll('.twit-follow').forEach(function(tag) {
+      tag.addEventListener('click', function() {
+        const myId = document.querySelector('#my-id');
+        if (myId) {
+          const userId = tag.parentNode.querySelector('.twit-user-id').value; // 작성자 ID
+          if (userId !== myId.value) {                                        // 작성자ID !==  나
+            if (confirm('팔로우 하시겠습니까?')) {
+              axios.post(`/user/${userId}/follow`)
+                .then(() => {
+                  location.reload();
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+            }
+          }
+        }
+      });
+    });
+
+    // 👇 [언팔로우] 버튼
+    document.querySelectorAll('.twit-unfollow').forEach(function(tag) {
+      tag.addEventListener('click', function() {
+        const myId = document.querySelector('#my-id');
+        if (myId) {
+          const userId = tag.parentNode.querySelector('.twit-user-id').value; // 작성자 ID
+          if (userId !== myId.value) {                                        // 작성자ID !==  나
+            if (confirm('언팔로우 하시겠습니까?')) {
+              axios.post(`/user/${userId}/unfollow`)
+                .then(() => {
+                  location.reload();
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+            }
+          }
+        }
+      });
+    });
+
+    // 👇 [글 수정] 버튼
+    document.querySelectorAll('.twit-update').forEach(function(tag) {
+      tag.addEventListener('click', function() {
+        const myId = document.querySelector('#my-id');
+        if (myId) {
+          const userId = tag.parentNode.querySelector('.twit-user-id').value;     // 작성자 ID
+          if (userId === myId.value) {                                            // 작성자ID ===  나
+            if (confirm('수정 하시겠습니까?')) {
+              const postId = tag.parentNode.querySelector('.twit-id').value;      // 게시글 ID
+              window.location.href=`/update/${postId}`                            // 페이지 이동 (/update/${postId})
+            }
+          }
+        }
+      });
+    });
+
+    // 👇 [글 삭제] 버튼
+    document.querySelectorAll('.twit-delete').forEach(function(tag) {
+      tag.addEventListener('click', function() {
+        const myId = document.querySelector('#my-id');
+        if (myId) {
+          const userId = tag.parentNode.querySelector('.twit-user-id').value;   // 작성자 ID
+          if (userId === myId.value) {                                          // 작성자 ID ===  나
+            if (confirm('삭제 하시겠습니까?')) {
+              const postId = tag.parentNode.querySelector('.twit-id').value;    // 게시글 ID
+              axios.post(`/post/delete/${postId}`)
+                .then(() => {
+                  location.reload();
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+            }
+          }
+        }
+      });
+    });
+
+
+    // 👇 댓글
+    document.querySelectorAll('.comment-submit').forEach(function (submitBtn) {
+      submitBtn.addEventListener('click', function () {
+        // 이벤트 리스너에서 submitBtn을 클릭한 버튼으로 사용
+        const content = submitBtn.parentNode.querySelector('.comment-text').value;
+        const userId = submitBtn.parentNode.querySelector('.userId').value;
+        const postUserId = submitBtn.parentNode.querySelector('.postUserId').value;
+        const postId = submitBtn.parentNode.querySelector('.postId').value;
+        const commentId = submitBtn.parentNode.querySelector('.commentId').value;
+
+        // JSON 객체 생성
+        const jsonData = {
+          content,
+          userId,
+          postUserId,
+          postId,
+          commentId,
+        };
+
+        // 서버로 데이터 전송
+        axios
+          .post(`/comment/${postId}`, jsonData)
+          .then(() => {
+            window.location.href = '/';
+          })
+          .catch((error) => {
+            console.error('에러 발생:', error);
+            // 에러 처리 추가
+          });
+      });
+    });      
+    
+    // 👇 [답글] 버튼 => 입력창 
+    document.querySelectorAll('.addReply').forEach(function (replyBtn) {
+      replyBtn.addEventListener('click', function () {
+        console.log('답글 입력창')
+        const replyInput = replyBtn.nextElementSibling; // 형제 요소 중 다음 요소를 가져옴
+        if (replyInput.style.display === 'none') {
+          replyInput.style.display = 'inline'; // 대댓글 입력창을 보여줌
+        } else {
+          replyInput.style.display = 'none'; // 대댓글 입력창을 숨김
+        }
+      });
+    });      
+
+    // 👇 답글
+    document.querySelectorAll('.reply-submit').forEach(function (replyBtn) {
+      replyBtn.addEventListener('click', function () {
+        console.log('답글 제출')
+        // 이벤트 리스너에서 submitBtn을 클릭한 버튼으로 사용
+        const content = replyBtn.parentNode.querySelector('.reply-text').value;
+        const userId = replyBtn.parentNode.querySelector('.userId').value;
+        const postUserId = replyBtn.parentNode.querySelector('.postUserId').value;
+        const postId = replyBtn.parentNode.querySelector('.postId').value;
+        const commentId = replyBtn.parentNode.querySelector('.commentId').value;
+
+        // JSON 객체 생성
+        const jsonData = {
+          content,
+          userId,
+          postUserId,
+          postId,
+          commentId,
+        };
+
+        // 서버로 데이터 전송
+        axios
+          .post(`/comment/reply/${commentId}`, jsonData)
+          .then(() => {
+            window.location.href = '/';
+          })
+          .catch((error) => {
+            console.error('에러 발생:', error);
+            // 에러 처리 추가
+          });
+      });
+    });  
+
+  </script>
+{% endblock %}

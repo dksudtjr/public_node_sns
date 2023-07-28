@@ -1,0 +1,81 @@
+<!-- 
+    1. 로그인 O => 팔로잉, 팔로워
+    2. 로그인 X => 로그인
+    3. 로그인 에러 => 알림창 
+ -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title> <!-- (controllers/page.js) res.render('main', {title: 'NodeBird', twits}) -->
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/main.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="profile-wrap">
+        <div class="profile">
+          <!-- 👇 1. 로그인 O => 팔로잉, 팔로워  -->
+          {% if user and user.id %} <!-- (routes/page.js) res.locals.user ...  -->
+            <div class="user-name">{{'안녕하세요! ' + user.nick + '님'}}</div>
+            <div class="half">
+              <div>팔로잉</div>
+              <a class="count following-count" href="/profile">{{followingCount}}</a> <!-- (routes/page.js) res.locals.followingCount -->
+            </div>
+            <div class="half">
+              <div>팔로워</div>
+              <a class="count follower-count" href="/profile">{{followerCount}}</a>
+            </div>
+          <input id="my-id" type="hidden" value="{{user.id}}">
+          <a href="/" class="btn">홈</a>
+          <a id="my-profile" href="/profile" class="btn">팔로잉/팔로워</a>
+          <a id="my-like" href="/post/mylike/{{ user.id }}" class="btn">❤️</a> <!-- 좋아요   -->
+          <a id="logout" href="/auth/logout" class="btn">로그아웃</a>
+          <!-- 👇 2. 로그인 X => 로그인  -->
+          {% else %}
+            <form id="login-form" action="/auth/login" method="post">
+              <div class="input-group">
+                <label for="email">이메일</label>
+                <input id="email" type="email" name="email" required autofocus>
+              </div>
+              <div class="input-group">
+                <label for="password">비밀번호</label>
+                <input id="password" type="password" name="password" required>
+              </div>
+              <a id="join" href="/join" class="btn">회원가입</a>
+              <button id="login" type="submit" class="btn">로그인</button>
+              <button id="freepass" type="submit" class="btn">둘러보기</button>
+            </form>
+          {% endif %}
+        </div>
+        <footer>
+        </footer>
+      </div>
+      {% block content %}
+      {% endblock %}
+    </div>
+    <!-- axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      // 👇 3. 로그인 에러 => 알림창 
+      window.onload = () => {     // 웹페이지가 완전히 로드된 후, 실행
+        if (new URL(location.href).searchParams.get('error')) { // 쿼리스트링 => localhost:8000?error=에러메시지
+          alert(new URL(location.href).searchParams.get('error'));
+        }
+      };
+
+      // 둘러보기
+      if (document.getElementById('freepass')) {
+        document.getElementById('freepass').addEventListener('click', function() {
+          document.getElementById('email').value = 'test@test.test';
+          document.getElementById('password').value = 'test';
+          document.getElementById('login-form').submit();
+        })
+      }
+    </script>
+    {% block script %}
+    {% endblock %}
+  </body>
+</html>

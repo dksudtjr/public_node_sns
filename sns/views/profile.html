@@ -1,0 +1,74 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <div class="timeline">
+    <!-- 👇 1. 팔로잉 목록 -->
+    <div class="followings half">
+      <h2>팔로잉 목록</h2>
+      {% if user.Followings %} <!-- 1) deserializeUser에서 req.user에 followings 심어놓음  2) routes/page.js에서 res.locals.user = req.user 설정했으므로, 어디에서든 user를 통해 req.user 접근 가능 -->
+        {% for following in user.Followings %}
+          <div>
+            <a class="twit-author" style="font-weight: bold; color: rgb(17, 79, 214);" href="post/{{ following.id }}">{{ following.nick }}</a>
+            <!-- <span>{{following.nick}}</span> -->
+            <button class="twit-unfollow" value="{{ following.id }}">언팔로우</button>  <!-- 👈 [언팔로우] 버튼 -->
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+    <!-- 👇 2. 팔로워 목록 -->
+    <div class="followers half">
+      <h2>팔로워 목록</h2>
+      {% if user.Followers %}
+        {% for follower in user.Followers %}
+        <div>
+          <a class="twit-author" style="font-weight: bold; color: rgb(17, 79, 214);" href="post/{{ follower.id }}">{{ follower.nick }}</a>
+          <!-- <span>{{follower.nick}}</span>  -->
+          {% if not followingIdList.includes(follower.id) %}
+            <button class="twit-follow" value="{{ follower.id }}">팔로우</button>  <!-- 👈 [팔로우] 버튼 -->
+          {% endif %}
+        </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+    <!-- 👇 3. 좋아요 목록 -->
+
+  </div>
+{% endblock %}
+
+{% block script %}
+<script>
+    // 👇 [팔로우] 버튼
+    document.querySelectorAll('.twit-follow').forEach(function(tag) {
+      tag.addEventListener('click', function() {
+        const userId = document.querySelector('.twit-follow').value;
+        if (confirm('팔로우 하시겠습니까?')) {
+            axios.post(`/user/${userId}/follow`) 
+            .then(() => {
+                  location.reload();
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+        }
+      });
+    });
+
+    // 👇 [언팔로우] 버튼
+    document.querySelectorAll('.twit-unfollow').forEach(function(tag) {
+      tag.addEventListener('click', function() {
+        const userId = document.querySelector('.twit-unfollow').value;
+        if (confirm('언팔로우 하시겠습니까?')) {
+              axios.post(`/user/${userId}/unfollow`)
+                .then(() => {
+                  location.reload();
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+            }
+        });
+    });
+
+
+</script>
+{% endblock %}
