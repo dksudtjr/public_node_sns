@@ -13,7 +13,7 @@
 
 <br><br>
 
-## 📖 Table of Contents
+# 📖 Table of Contents
 
 
 1. [프로젝트 소개](#1-프로젝트-소개)
@@ -149,13 +149,15 @@
 - AWS Lambda: 이미지 리사이징 작업
 
 
+
+<br><br>
+
 # 2. SNS
 
----
+<br>
 
 ## 주요 기능
 
----
 
 - 로그인
 - 게시글 작성
@@ -173,9 +175,10 @@
 - 해시태그
     - 해시태그를 통해 게시글 검색
 
+<br><br>
+
 ## 데이터베이스
 
----
 
 ### **폴더 구조**
 
@@ -190,6 +193,8 @@
 - `config`
     - `config.json` - MySQL 접속 정보
 - `app.js` - 모델을 MySQL 서버와 연결
+
+<br><br>
 
 ### 테이블 관계 (N:M)
 
@@ -212,9 +217,14 @@
     - A의 `Followers` 찾으려면, ’팔로잉(FK) = A’인 사람을 찾는다 (`foreignKey: 'followingId'`)
     - A의 `Followings` 찾으려면, ‘팔로워(FK) = A’ 인 사람을 찾는다 (`foreignKey: 'followerId'`)
 
+
+<br><br>
+
+
 ## 로그인 (passport)
 
----
+
+
 
 ### 폴더 구조
 
@@ -224,6 +234,10 @@
     - `localStrategy.js` - 인증 로직 (`passport.use(new LocalStrategy())`)
     - `index.js` - 세션에 user데이터 저장/조회 (`passport.serializeUser()`/`passport.deserializeUser()`)
 - `app.js` - passport 설정
+
+
+<br><br>
+
 
 ### passport
 
@@ -242,6 +256,10 @@ npm i passport passport-local passport-kako bcrypt
 1. 로그인 => 세션(`req.session`)에 user 데이터 저장 (serialize) + 쿠키 전송
 2. 매 요청 => 쿠키 조회 + 세션(`req.session`)에서 user 데이터(`req.user`) 조회 (deserialize)
 
+
+<br><br>
+
+
 ### 미들웨어 커스텀
 
 - 미들웨어에 기능을 추가하고 싶을 때, 사용한다.
@@ -257,6 +275,10 @@ exports.login = (req, res, next) => {
   })(req, res, next)
 }
 ```
+
+
+<br><br>
+
 
 ### 로그인
 
@@ -296,9 +318,12 @@ exports.logout = (req, res) => {
 };
 ```
 
+
+<br><br>
+
+
 ## (서버의 하드로) 이미지 업로드
 
----
 
 ### 폴더 구조
 
@@ -312,11 +337,19 @@ exports.logout = (req, res) => {
     - `post.js` - 이미지 업로드 ,게시글 생성
     - `page.js` - 메인화면에 게시글 랜더링
 
+
+<br><br>
+
+
 ### multer
 
 1. form(`multipart/form-data`) 파일 업로드 → `upload.single(input의 name)`
 2. 업로드한 파일 접근 → `req.file`
 3. 파일 이외 데이터 → `req.body`
+
+
+<br><br>
+
 
 ### Promise.all([promise1, promise2])
 
@@ -345,6 +378,9 @@ Promise.all([promise1, promise2, promise3])
   });
 ```
 
+<br><br>
+
+
 ### include (JOIN)
 
 - `include`: 관계 있는 모델을 함께 가져옴
@@ -362,9 +398,12 @@ const user = await User.findOne(
 console.log(user.comments); // comments 키는 hasMany이므로 복수형으로 자동 변환되어 생성 (hasOne이면, 단수형)
 ```
 
+
+<br><br>
+
+
 ## 팔로잉, 해시태그 검색
 
----
 
 ### 파일 구조
 
@@ -381,12 +420,20 @@ console.log(user.comments); // comments 키는 hasMany이므로 복수형으로 
     - `page.js` - 해시태그 검색 (해당 Hashtag의 Post들)
 - `app.js` - 서버에 라우터(`user.js`, `page.js`) 연결 + 정적파일(`uploads`폴더) 연결
 
+
+<br><br>
+
+
 ### passport.deserializeUser() → req.user
 
 - passport가 `passport.deserializeUser()`를 통해 `req.user`에 사용자 정보를 저장
 - 라우터가 실행되기 전에 `deserializeUser`가 먼저 실행 됨 => `req.user`
 - `<form>`태그에서 method 지정 안 하면, 쿼리스트링으로 전달 (GET)
     - `/hashtag?키=값` => `req.query.키`
+
+
+<br><br>
+
 
 ### req객체 속성
 
@@ -397,9 +444,13 @@ console.log(user.comments); // comments 키는 hasMany이므로 복수형으로 
     - `<form>`태그에서 method 지정 안 하면, 쿼리스트링으로 전달 (GET) - `/hashtag?키=값` => `req.query.키`
     1. URL 파라미터 (`/:<URL 파라미터>/follow`) → `req.params.<URL 파라미터>`
 
+
+<br><br>
+
+
 ## 댓글, 댓글의 댓글
 
----
+
 
 ### 데이터 모델
 
@@ -412,10 +463,18 @@ console.log(user.comments); // comments 키는 hasMany이므로 복수형으로 
 4. `Reply`
     - `belongsTo(db.Comment)` - `N:1`
 
+
+<br><br>
+
+
 ### 정렬
 
 - `createdAt`기준으로 `Post`는 내림차순 정렬하고, 각 `Post`의 `Comment`들은 오름차순 정렬
     - <span style="color: orange">`include` 내부에서는 `order`를 사용할 수 없습니다.</span> `include`는 연관된 모델들을 가져올 때 사용되며, 이때 `order`를 사용하고 싶다면 `include` 바깥에서 정의해야 합니다.
+
+
+<br><br>
+
 
 ### 구현
 
@@ -424,9 +483,16 @@ console.log(user.comments); // comments 키는 hasMany이므로 복수형으로 
 1. 서버(`/comment/:postId`)로 보내면, 댓글
 2. 서버(`/comment/reply/:commentId`)로 보내면, 대댓글
 
+
+<br><br>
+
+
 # 3. 이미지 리사이징 (S3, AWS Lambda)
 
----
+
+![Untitled](assets/Untitled%202.png)
+
+<br>
 
 1. 지금까지 `multer`를 이용해서 서버의 하드(uploads폴더)에 이미지 업로드
     - 멀티 프로세싱을 사용할 경우, 프로세스 간 공유해야 하는 데이터는 DB에 저장
@@ -436,11 +502,12 @@ console.log(user.comments); // comments 키는 hasMany이므로 복수형으로 
     - 리사이징 (`tumb/`) => 메인화면 게시글 (Lambda의 리사이징이 완료되지 않았으면, 원본을 보여줌)
 3. S3버킷에 원본 이미지 파일이 저장(`original/`)되면, 리사이징해서 다시 S3에 저장 (`thumb/`)
 
-![Untitled](assets/Untitled%202.png)
+
+<br><br>
+
 
 ## **(AWS S3로) 이미지 업로드**
 
----
 
 ### S3 버킷 (생성/권한/액세스키)
 
@@ -452,6 +519,10 @@ console.log(user.comments); // comments 키는 hasMany이므로 복수형으로 
 3. AWS 액세스 키 (IAM)
     - 서버에서 AWS 서비스에 접근 (`S3`, `Lamda` 등)
         - *계정 - 보안 자격 증명 - 새 액세스 키 만들기 - 액세스 키/비밀 액세스 키*
+
+
+<br><br>
+
 
 ### 이미지 업로드 (multer → S3)
 
@@ -507,12 +578,20 @@ exports.afterUploadImage = (req, res) => {
 };
 ```
 
+
+<br><br>
+
+
 ## **Lambda (이미지 리사이징)**
 
 1. `S3`에 이미지 업로드
     - 원본 (`original/`) => 업로드할 때, 미리보기 (리사이징에 시간 걸림)
     - 리사이징 (`tumb/`) => 메인화면 게시글 (Lambda의 리사이징이 완료되지 않았으면, 원본을 보여줌)
 2. S3버킷에 원본 이미지 파일이 저장(`original/`)되면, 리사이징해서 다시 S3에 저장 (`thumb/`)
+
+
+<br><br>
+
 
 ### Lambda 코드
 
@@ -566,6 +645,10 @@ exports.handler = async (event, context, callback) => {
 }
 ```
 
+
+<br><br>
+
+
 ### **업로드1 (aws-upload 폴더 → S3)**
 
 `bash`
@@ -576,6 +659,10 @@ zip -r aws-upload.zip ./*						# 압축
 aws s3 cp "aws-upload.zip" s3://my-nodebird		# S3로 업로드 (AWS 액세스 키 등록)
 ```
 
+
+<br><br>
+
+
 ### **업로드2 (S3 → Lambda)**
 
 1. `코드 소스`: `S3`에서 업로드
@@ -584,9 +671,12 @@ aws s3 cp "aws-upload.zip" s3://my-nodebird		# S3로 업로드 (AWS 액세스 �
     - *s3://my-nodebird/original*
 3. `일반 구성`: 제한시간: 10초
 
+
+<br><br>
+
+
 # 4. 배포 (pm2, Redis)
 
----
 
 ## pm2
 
@@ -600,6 +690,10 @@ aws s3 cp "aws-upload.zip" s3://my-nodebird		# S3로 업로드 (AWS 액세스 �
     - 멀티 프로세싱 => 노드 프로세스 여러 개 => 메모리(세션) 공유 X => `Redis` 필요
 3. 로드 밸런싱
     - 자동으로 여러 요청을 여러 노드 프로세스에 고르게 분배
+
+
+<br><br>
+
 
 ## connect-redis (레디스에 세션 저장)
 
@@ -660,9 +754,17 @@ const sessionOption = {
 app.use(session(sessionOption))
 ```
 
+
+<br><br>
+
+
 # 5. API 서버
 
 ## SOP, CORS, JWT
+
+![Untitled](assets/Untitled%203.png)
+
+<br>
 
 1. **Origin**
     - 출처 (`프로토콜` + `호스트` + `포트`)
@@ -709,11 +811,15 @@ app.use(session(sessionOption))
         2. 토큰을 탈취당하면, 토큰이 만료될 때까지 클라이언트에서 재발급이나 삭제가 어려움
 6. JWT
 
-![Untitled](assets/Untitled%203.png)
+
+
+<br><br>
 
 ## **로그인, 도메인 등록, clientSecret**
 
 ![Untitled](assets/Untitled%204.png)
+
+<br>
 
 - `sns_api`
     - `app.js`
@@ -734,9 +840,14 @@ app.use(session(sessionOption))
     - `controllers`
         - `index.js` - 메인화면(clientSecret 랜더링), 도메인 생성 (clientSecret 생성)
 
+
+<br><br>
+
 ## **JWT 생성/발급**
 
 ![Untitled](assets/Untitled%205.png)
+
+<br>
 
 1. 클라이언트: `clientSecret` 전송
 2. 서버:
@@ -753,9 +864,15 @@ app.use(session(sessionOption))
         - `v1.js` - 토큰 발급(`clientSecret` 받은 후, `JWT` 생성/발급), 토큰 인증 테스트
     - `app.js` - 서버에 라우터(`v1.js`) 연결
 
+
+<br><br>
+
+
 ## **세션에 JWT 저장 후, 전송**
 
 ![Untitled](assets/Untitled%206.png)
+
+<br>
 
 1. 클라이언트: `clientSecret` 전송
 2. 서버: `JWT` 생성/발급
@@ -769,6 +886,10 @@ app.use(session(sessionOption))
         - `index.js` - 토큰 인증 테스트 (`/test`)
     - `controllers`
         - `index.js`1) 서버로 `CLIENT_SECRET` 보냄2) 받은 `JWT`를 세션에 저장 (`req.session`)3) 요청 시, `JWT` 포함 (`Authorization`헤더)
+
+
+<br><br>
+
 
 ## **API 서버 (조회 - 내 포스트, 해시태그)**
 
@@ -789,6 +910,10 @@ app.use(session(sessionOption))
         - `index.js` - 내 포스트, 해시태그 검색
     - `controllers`
         - `index.js`요청 헤더(`ORIGIN`) <= (client/controllers/index - `axios.defaults.headers.origin`)토큰 재발급 & 요청(+`JWT`)내 포스트, 해시태그 검색
+
+
+<br><br>
+
 
 ## CORS
 
