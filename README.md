@@ -9,7 +9,7 @@
 
 ---
 
-![Untitled](SNS%20a7f47ba83fc343749be51460f7a812b0/Untitled.png)
+![Untitled](assets/Untitled.png)
 
 ## 📖 Table of Contents
 
@@ -126,7 +126,7 @@
 
 ### passport
 
-![Untitled](SNS%20a7f47ba83fc343749be51460f7a812b0/Untitled%201.png)
+![Untitled](assets/Untitled%201.png)
 
 - `passport`: 인증 미들웨어 (세션, 쿠키 등 복잡한 작업을 간단하게!)
 - `req.session`: 세션 데이터
@@ -335,7 +335,7 @@ console.log(user.comments); // comments 키는 hasMany이므로 복수형으로 
     - 리사이징 (`tumb/`) => 메인화면 게시글 (Lambda의 리사이징이 완료되지 않았으면, 원본을 보여줌)
 3. S3버킷에 원본 이미지 파일이 저장(`original/`)되면, 리사이징해서 다시 S3에 저장 (`thumb/`)
 
-![Untitled](SNS%20a7f47ba83fc343749be51460f7a812b0/Untitled%202.png)
+![Untitled](assets/Untitled%202.png)
 
 ## a. **(AWS S3로) 이미지 업로드**
 
@@ -608,11 +608,11 @@ app.use(session(sessionOption))
         2. 토큰을 탈취당하면, 토큰이 만료될 때까지 클라이언트에서 재발급이나 삭제가 어려움
 6. JWT
 
-![Untitled](SNS%20a7f47ba83fc343749be51460f7a812b0/Untitled%203.png)
+![Untitled](assets/Untitled%203.png)
 
 ## b. **로그인, 도메인 등록, clientSecret**
 
-![Untitled](SNS%20a7f47ba83fc343749be51460f7a812b0/Untitled%204.png)
+![Untitled](assets/Untitled%204.png)
 
 - `sns_api`
     - `app.js`
@@ -635,7 +635,7 @@ app.use(session(sessionOption))
 
 ## c. **JWT 생성/발급**
 
-![Untitled](SNS%20a7f47ba83fc343749be51460f7a812b0/Untitled%205.png)
+![Untitled](assets/Untitled%205.png)
 
 1. 클라이언트: `clientSecret` 전송
 2. 서버:
@@ -654,7 +654,7 @@ app.use(session(sessionOption))
 
 ## d. **세션에 JWT 저장 후, 전송**
 
-![Untitled](SNS%20a7f47ba83fc343749be51460f7a812b0/Untitled%206.png)
+![Untitled](assets/Untitled%206.png)
 
 1. 클라이언트: `clientSecret` 전송
 2. 서버: `JWT` 생성/발급
