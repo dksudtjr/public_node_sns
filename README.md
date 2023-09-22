@@ -19,10 +19,10 @@
 2. [SNS](#2-sns)
     - [주요 기능](#주요-기능)
     - [데이터베이스](#데이터베이스)
-    - [로그인 (passport)](#c-로그인-passport)
-    - [(서버의 하드로) 이미지 업로드](#d-서버의-하드로-이미지-업로드)
-    - [팔로잉, 해시태그 검색](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    - [댓글, 댓글의 댓글](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+    - [로그인 (passport)](#로그인-passport)
+    - [(서버의 하드로) 이미지 업로드](#서버의-하드로-이미지-업로드)
+    - [팔로잉, 해시태그 검색](#팔로잉-해시태그-검색)
+    - [댓글, 댓글의 댓글](#댓글-댓글의-댓글)
 3. [이미지 리사이징 (S3, AWS Lambda)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
     - [(AWS S3로) 이미지 업로드](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
     - [Lambda (이미지 리사이징)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
@@ -112,7 +112,7 @@
     - A의 `Followers` 찾으려면, ’팔로잉(FK) = A’인 사람을 찾는다 (`foreignKey: 'followingId'`)
     - A의 `Followings` 찾으려면, ‘팔로워(FK) = A’ 인 사람을 찾는다 (`foreignKey: 'followerId'`)
 
-## c. 로그인 (passport)
+## 로그인 (passport)
 
 ---
 
@@ -196,7 +196,7 @@ exports.logout = (req, res) => {
 };
 ```
 
-## d. (서버의 하드로) 이미지 업로드
+## (서버의 하드로) 이미지 업로드
 
 ---
 
@@ -262,7 +262,7 @@ const user = await User.findOne(
 console.log(user.comments); // comments 키는 hasMany이므로 복수형으로 자동 변환되어 생성 (hasOne이면, 단수형)
 ```
 
-## e. 팔로잉, 해시태그 검색
+## 팔로잉, 해시태그 검색
 
 ---
 
@@ -297,7 +297,7 @@ console.log(user.comments); // comments 키는 hasMany이므로 복수형으로 
     - `<form>`태그에서 method 지정 안 하면, 쿼리스트링으로 전달 (GET) - `/hashtag?키=값` => `req.query.키`
     1. URL 파라미터 (`/:<URL 파라미터>/follow`) → `req.params.<URL 파라미터>`
 
-## f. 댓글, 댓글의 댓글
+## 댓글, 댓글의 댓글
 
 ---
 
