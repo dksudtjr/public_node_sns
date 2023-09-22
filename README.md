@@ -15,14 +15,14 @@
 
 ---
 
-1. [프로젝트 소개](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-2. [SNS](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    1. [주요 기능](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    2. [데이터베이스](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    3. [로그인 (passport)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    4. [(서버의 하드로) 이미지 업로드](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    5. [팔로잉, 해시태그 검색](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    6. [댓글, 댓글의 댓글](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+1. [프로젝트 소개](#1-프로젝트-소개)
+2. [SNS](#2-sns)
+    a. [주요 기능](#a-주요-기능)
+    b. [데이터베이스](#b-데이터베이스)
+    c. [로그인 (passport)](#c-로그인-passport)
+    d. [(서버의 하드로) 이미지 업로드](#d-서버의-하드로-이미지-업로드)
+    e. [팔로잉, 해시태그 검색](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+    7. [댓글, 댓글의 댓글](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
 3. [이미지 리사이징 (S3, AWS Lambda)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
     1. [(AWS S3로) 이미지 업로드](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
     2. [Lambda (이미지 리사이징)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
