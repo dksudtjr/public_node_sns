@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>브라우저에서 API 요청</title>
+    </head>
+    <body>
+        <h1>브라우저에서 API 요청</h1>
+        <!-- 👇 요청 결과 -->
+        <div id="result"></div>
+        
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script>
+            // 토큰 발급 (CORS 발생)
+            axios.post('http://localhost:8002/v2/token', {
+                clientSecret: '{{ key }}', // 프론트에서 사용하는 clientSecret은 노출 됨 (더 강력한 서버용 clientSecret 만들면 좋음)
+            })
+            .then((res) => {
+                // 응답 랜더링 (id="result")
+                document.querySelector('#result').textContent = JSON.stringify(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+        </script>
+    </body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>API 서버</title>
+    <style>
+      .input-group label { width: 200px; display: inline-block; }
+    </style>
+  </head>
+  <body>
+    <!-- 👇 1. 로그인 O => 도메인 등록 화면 -->
+    {% if user and user.id %}
+      <span class="user-name">안녕하세요! {{user.nick}}님</span>
+      <a href="/auth/logout">
+        <button>로그아웃</button>
+      </a>
+      <fieldset>
+        <legend style="font-weight: bold;">도메인 등록</legend>
+        <form action="/domain" method="post">   <!-- 👈 도메인(+clientSecret) 생성 -->
+          <div>
+            <span style="font-weight: bold;">유형</span>:
+            <label for="type-free">무료</label>
+            <input type="radio" id="type-free" name="type" value="free" checked> <!-- 디폴트로 "무료" 선택 -->
+            <label for="type-premium">프리미엄</label>
+            <input type="radio" id="type-premium" name="type" value="premium">
+          </div>
+          <div style="display: inline-block;">
+            <label for="host" style="font-weight: bold;">도메인</label>:
+            <input type="text" id="host" name="host" placeholder="ex) naver.com">
+          </div>
+          <button style="margin-left: 10px;">저장</button>                 <!-- 기본동작: type="submit" -->
+        </form>
+      </fieldset>
+      <table border="1">
+        <thead>
+            <tr>
+                <th>도메인 주소</th>
+                <th>타입</th>
+                <th>클라이언트 비밀키</th>
+              </tr>
+        </thead>
+        <tbody>
+        {% for domain in domains %}                 <!-- controllers/index.js - renderLogin -->
+            <tr>
+                <td>{{domain.host}}</td>
+                <td>{{domain.type}}</td>
+                <td>{{domain.clientSecret}}</td>        <!-- 👈 clientSecret 랜더링 -->
+            </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    <!-- 👇 2. 로그인 X => 로그인 화면 -->
+    {% else %}
+      <form action="/auth/login" id="login-form" method="post"> <!-- 👈 로그인 로직 (passport) -->
+        <h2>NodeBird 계정으로 로그인하세요.</h2>
+        <div class="input-group">
+          <label for="email">이메일</label>
+          <input id="email" type="email" name="email" required autofocus>
+        </div>
+        <div class="input-group">
+          <label for="password">비밀번호</label>
+          <input id="password" type="password" name="password" required>
+        </div>
+        <div>회원가입은 웹서비스(localhost:8001)에서 하세요.</div>
+        <button id="login" type="submit">로그인</button>
+      </form>
+      <script>
+        window.onload = () => {
+          if (new URL(location.href).searchParams.get('error')) {
+            alert(new URL(location.href).searchParams.get('error'));
+          }
+        };
+      </script>
+    {% endif %}
+  </body>
+</html>
