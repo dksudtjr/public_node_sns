@@ -17,25 +17,26 @@
 
 1. [프로젝트 소개](#1-프로젝트-소개)
 2. [SNS](#2-sns)
-    a. [주요 기능](#a-주요-기능)
-    b. [데이터베이스](#b-데이터베이스)
-    c. [로그인 (passport)](#c-로그인-passport)
-    d. [(서버의 하드로) 이미지 업로드](#d-서버의-하드로-이미지-업로드)
-    e. [팔로잉, 해시태그 검색](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    7. [댓글, 댓글의 댓글](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+    - [주요 기능](#주요-기능)
+    - [데이터베이스](#데이터베이스)
+    - [로그인 (passport)](#c-로그인-passport)
+    - [(서버의 하드로) 이미지 업로드](#d-서버의-하드로-이미지-업로드)
+    - [팔로잉, 해시태그 검색](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+    - [댓글, 댓글의 댓글](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
 3. [이미지 리사이징 (S3, AWS Lambda)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    1. [(AWS S3로) 이미지 업로드](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    2. [Lambda (이미지 리사이징)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+    - [(AWS S3로) 이미지 업로드](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+    - [Lambda (이미지 리사이징)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
 4. [배포 (pm2, Redis)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    1. [pm2](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    2. [connect-redis (레디스에 세션 저장)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+    - [pm2](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+    - [connect-redis (레디스에 세션 저장)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
 5. [API 서버](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    1. [SOP, CORS, JWT](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    2. [로그인, 도메인 등록, clientSecret](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    3. [JWT 생성/발급](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    4. [세션에 JWT 저장 후, 전송](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    5. [API 서버 (조회 - 내 포스트, 해시태그)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    6. [CORS](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+    - [SOP, CORS, JWT](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+    - [로그인, 도메인 등록, clientSecret](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+    - [JWT 생성/발급](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+    - [세션에 JWT 저장 후, 전송](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+    - [API 서버 (조회 - 내 포스트, 해시태그)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+    - [CORS](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+
 
 # 1. 프로젝트 소개
 
@@ -52,7 +53,7 @@
 
 ---
 
-## a. 주요 기능
+## 주요 기능
 
 ---
 
@@ -72,7 +73,7 @@
 - 해시태그
     - 해시태그를 통해 게시글 검색
 
-## b. 데이터베이스
+## 데이터베이스
 
 ---
 
