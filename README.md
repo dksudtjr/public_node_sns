@@ -23,16 +23,16 @@
     - [(서버의 하드로) 이미지 업로드](#서버의-하드로-이미지-업로드)
     - [팔로잉, 해시태그 검색](#팔로잉-해시태그-검색)
     - [댓글, 댓글의 댓글](#댓글-댓글의-댓글)
-3. [이미지 리사이징 (S3, AWS Lambda)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    - [(AWS S3로) 이미지 업로드](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    - [Lambda (이미지 리사이징)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-4. [배포 (pm2, Redis)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    - [pm2](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    - [connect-redis (레디스에 세션 저장)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-5. [API 서버](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    - [SOP, CORS, JWT](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    - [로그인, 도메인 등록, clientSecret](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
-    - [JWT 생성/발급](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
+3. [이미지 리사이징 (S3, AWS Lambda)](#이미지-리사이징-S3-AWS-Lambda)
+    - [(AWS S3로) 이미지 업로드](#AWS-S3로-이미지-업로드)
+    - [Lambda (이미지 리사이징)](#Lambda-이미지-리사이징)
+4. [배포 (pm2, Redis)](#배포-pm2-Redis)
+    - [pm2](#-pm2)
+    - [connect-redis (레디스에 세션 저장)](#connect-redis-레디스에-세션-저장)
+5. [API 서버](#API-서버)
+    - [SOP, CORS, JWT](#SOP-CORS-JWT)
+    - [로그인, 도메인 등록, clientSecret](#로그인-도메인-등록-clientSecret)
+    - [JWT 생성/발급](JWT-생성/발급)
     - [세션에 JWT 저장 후, 전송](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
     - [API 서버 (조회 - 내 포스트, 해시태그)](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
     - [CORS](https://www.notion.so/SNS-a7f47ba83fc343749be51460f7a812b0?pvs=21)
@@ -338,7 +338,7 @@ console.log(user.comments); // comments 키는 hasMany이므로 복수형으로 
 
 ![Untitled](assets/Untitled%202.png)
 
-## a. **(AWS S3로) 이미지 업로드**
+## **(AWS S3로) 이미지 업로드**
 
 ---
 
@@ -407,7 +407,7 @@ exports.afterUploadImage = (req, res) => {
 };
 ```
 
-## b. **Lambda (이미지 리사이징)**
+## **Lambda (이미지 리사이징)**
 
 1. `S3`에 이미지 업로드
     - 원본 (`original/`) => 업로드할 때, 미리보기 (리사이징에 시간 걸림)
@@ -501,7 +501,7 @@ aws s3 cp "aws-upload.zip" s3://my-nodebird		# S3로 업로드 (AWS 액세스 �
 3. 로드 밸런싱
     - 자동으로 여러 요청을 여러 노드 프로세스에 고르게 분배
 
-### connect-redis (레디스에 세션 저장)
+## connect-redis (레디스에 세션 저장)
 
 > Redis에 세션을 저장하면,
 > 
@@ -562,7 +562,7 @@ app.use(session(sessionOption))
 
 # 5. API 서버
 
-## a. SOP, CORS, JWT
+## SOP, CORS, JWT
 
 1. **Origin**
     - 출처 (`프로토콜` + `호스트` + `포트`)
@@ -611,7 +611,7 @@ app.use(session(sessionOption))
 
 ![Untitled](assets/Untitled%203.png)
 
-## b. **로그인, 도메인 등록, clientSecret**
+## **로그인, 도메인 등록, clientSecret**
 
 ![Untitled](assets/Untitled%204.png)
 
@@ -634,7 +634,7 @@ app.use(session(sessionOption))
     - `controllers`
         - `index.js` - 메인화면(clientSecret 랜더링), 도메인 생성 (clientSecret 생성)
 
-## c. **JWT 생성/발급**
+## **JWT 생성/발급**
 
 ![Untitled](assets/Untitled%205.png)
 
@@ -653,7 +653,7 @@ app.use(session(sessionOption))
         - `v1.js` - 토큰 발급(`clientSecret` 받은 후, `JWT` 생성/발급), 토큰 인증 테스트
     - `app.js` - 서버에 라우터(`v1.js`) 연결
 
-## d. **세션에 JWT 저장 후, 전송**
+## **세션에 JWT 저장 후, 전송**
 
 ![Untitled](assets/Untitled%206.png)
 
@@ -670,7 +670,7 @@ app.use(session(sessionOption))
     - `controllers`
         - `index.js`1) 서버로 `CLIENT_SECRET` 보냄2) 받은 `JWT`를 세션에 저장 (`req.session`)3) 요청 시, `JWT` 포함 (`Authorization`헤더)
 
-## e. **API 서버 (조회 - 내 포스트, 해시태그)**
+## **API 서버 (조회 - 내 포스트, 해시태그)**
 
 - 서버
     - 토큰 확인(변조 검사) 후, json 응답
@@ -690,7 +690,7 @@ app.use(session(sessionOption))
     - `controllers`
         - `index.js`요청 헤더(`ORIGIN`) <= (client/controllers/index - `axios.defaults.headers.origin`)토큰 재발급 & 요청(+`JWT`)내 포스트, 해시태그 검색
 
-## f. CORS
+## CORS
 
 - 클라이언트는 요청헤더에 `Origin` 포함
     - `client`/`controllers`/`index.js`
